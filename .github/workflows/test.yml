@@ -1,0 +1,57 @@
+name: Test Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0" # Weekly on Sunday at 00:00 UTC
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        destination:
+          - "generic/platform=macOS"
+          - "generic/platform=macOS,variant=Mac Catalyst"
+          - "generic/platform=iOS"
+          - "generic/platform=iOS Simulator"
+          - "generic/platform=tvOS"
+          - "generic/platform=tvOS Simulator"
+          - "generic/platform=watchOS"
+          - "generic/platform=watchOS Simulator"
+          - "generic/platform=xrOS"
+          - "generic/platform=xrOS Simulator"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install xcbeautify
+        run: brew install xcbeautify
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild -scheme LibArchive -destination "${{ matrix.destination }}" | xcbeautify
+
+  test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Unit tests
+        run: swift test

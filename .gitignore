@@ -1,0 +1,13 @@
+.DS_Store
+/.build
+/.swiftpm
+/build
+/Packages
+/*.xcodeproj
+/*.zip
+*.xcframework
+*.tar
+*.log
+xcuserdata/
+*.xcuserstate
+BinaryTarget/

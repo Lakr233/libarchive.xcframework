@@ -1,0 +1,252 @@
+name: Build libarchive
+
+on:
+  workflow_dispatch:
+    inputs:
+      upstream:
+        description: "Which upstream to build: 'pinned' (Upstream.versions as committed) or 'latest'"
+        required: false
+        type: choice
+        options: [pinned, latest]
+        default: pinned
+      package_version:
+        description: "Package release tag, e.g. 0.1.0. Leave empty to take the next patch."
+        required: false
+        type: string
+        default: ""
+      skip_release:
+        description: "Build only, publish nothing"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 5 * * *"
+
+permissions:
+  contents: write
+
+# Two runs would each pick "highest existing tag + 1" before either publishes,
+# land on the same pair of tags, and both push Package.swift to the default
+# branch.
+concurrency:
+  group: build-libarchive
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: macos-latest
+    outputs:
+      build_needed: ${{ steps.plan.outputs.build_needed }}
+      storage_tag: ${{ steps.plan.outputs.storage_tag }}
+      package_tag: ${{ steps.plan.outputs.package_tag }}
+      upstream_versions: ${{ steps.plan.outputs.upstream_versions }}
+      skip_release: ${{ github.event.inputs.skip_release || 'false' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve upstream and pick tags
+        id: plan
+        env:
+          # Interpolated through the environment, never into the script body:
+          # these are attacker-controllable on a public repo, and this job holds
+          # a write token.
+          REQUESTED_UPSTREAM: ${{ github.event.inputs.upstream }}
+          REQUESTED_PACKAGE_VERSION: ${{ github.event.inputs.package_version }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+
+          # github.event.inputs is null on a schedule, so the `default: pinned`
+          # above never applies there. The nightly run is the one that is
+          # supposed to follow upstream.
+          if [ "$REQUESTED_UPSTREAM" = "latest" ] || [ "$EVENT_NAME" = "schedule" ]; then
+            ./Script/resolve-upstream.sh latest --write
+          fi
+          source ./Upstream.versions
+          echo "[*] libarchive $LIBARCHIVE_VERSION ($LIBARCHIVE_REF)"
+          echo "[*] xz $XZ_VERSION, zstd $ZSTD_VERSION"
+
+          STORAGE_TAG=$(./Script/next-tag.sh upstream)
+          echo "[*] storage tag: $STORAGE_TAG"
+
+          if [ -n "$REQUESTED_PACKAGE_VERSION" ]; then
+            if ! echo "$REQUESTED_PACKAGE_VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "[!] package_version must be semantic, for example 0.1.0" >&2
+              exit 1
+            fi
+            PACKAGE_TAG="$REQUESTED_PACKAGE_VERSION"
+          else
+            PACKAGE_TAG=$(./Script/next-tag.sh package)
+          fi
+          echo "[*] package tag: $PACKAGE_TAG"
+
+          # A scheduled run only builds when the pinned upstream has never been
+          # published. Manual runs always build: they are how a rebuild after a
+          # change to Vendor/ or the build scripts is requested, and the rev in
+          # the storage tag keeps those from colliding.
+          BUILD_NEEDED=true
+          if [ "$EVENT_NAME" = "schedule" ] && [ "${STORAGE_TAG##*.}" != "1" ]; then
+            echo "[*] ${LIBARCHIVE_REF:0:12} already published, nothing to do"
+            BUILD_NEEDED=false
+          fi
+
+          echo "build_needed=$BUILD_NEEDED" >> $GITHUB_OUTPUT
+          echo "storage_tag=$STORAGE_TAG" >> $GITHUB_OUTPUT
+          echo "package_tag=$PACKAGE_TAG" >> $GITHUB_OUTPUT
+          {
+            echo "upstream_versions<<UPSTREAM_EOF"
+            cat ./Upstream.versions
+            echo "UPSTREAM_EOF"
+          } >> $GITHUB_OUTPUT
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.build_needed == 'true'
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos, ios, tvos, watchos, visionos]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Setup build
+        run: |
+          uname -a
+          brew install cmake ninja
+
+      - name: Pin upstream
+        run: |
+          cat > Upstream.versions <<'UPSTREAM_EOF'
+          ${{ needs.plan.outputs.upstream_versions }}
+          UPSTREAM_EOF
+          cat Upstream.versions
+
+      - name: Build ${{ matrix.platform }}
+        run: ./Script/build-platform.sh ${{ matrix.platform }} ./build/dest
+
+      - name: Pack artifacts
+        run: tar -cf build-${{ matrix.platform }}.tar -C build/dest .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}
+          path: build-${{ matrix.platform }}.tar
+          retention-days: 1
+
+  release:
+    needs: [plan, build]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Pin upstream
+        run: |
+          cat > Upstream.versions <<'UPSTREAM_EOF'
+          ${{ needs.plan.outputs.upstream_versions }}
+          UPSTREAM_EOF
+          cat Upstream.versions
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./build/tarballs
+          merge-multiple: true
+
+      - name: Unpack artifacts
+        run: |
+          mkdir -p ./build/dest
+          for tarball in ./build/tarballs/*.tar; do
+            echo "Extracting $tarball..."
+            tar -xf "$tarball" -C ./build/dest
+          done
+          find ./build/dest -name '*.a' -exec lipo -info {} \;
+
+      - name: Merge xcframework
+        run: ./Script/merge-xcframework.sh ./build/dest ./build/libarchive.xcframework.zip
+
+      - name: Write Package.swift
+        run: |
+          set -euo pipefail
+          DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/${{ needs.plan.outputs.storage_tag }}/libarchive.xcframework.zip"
+          echo "[*] download url: $DOWNLOAD_URL"
+
+          mv ./build/libarchive.xcframework.zip /tmp/libarchive.xcframework.zip
+          cp ./Upstream.versions /tmp/Upstream.versions
+          git clean -fdx -f
+          git reset --hard
+          cp /tmp/Upstream.versions ./Upstream.versions
+          mv /tmp/libarchive.xcframework.zip ./libarchive.xcframework.zip
+          ./Script/build-manifest.sh libarchive.xcframework.zip "$DOWNLOAD_URL"
+
+      - name: Verify the manifest resolves
+        run: swift package dump-package > /dev/null
+
+      - name: Upload xcframework artifact
+        if: needs.plan.outputs.skip_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: libarchive-xcframework
+          path: ./libarchive.xcframework.zip
+          retention-days: 7
+
+      - name: Publish storage release
+        if: needs.plan.outputs.skip_release != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.plan.outputs.storage_tag }}
+          name: ${{ needs.plan.outputs.storage_tag }}
+          body: |
+            Binary storage for `${{ needs.plan.outputs.package_tag }}`. Built by automation.
+          draft: false
+          prerelease: false
+          files: |
+            libarchive.xcframework.zip
+
+      - name: Commit Package.swift
+        id: commit
+        if: needs.plan.outputs.skip_release != 'true'
+        env:
+          PACKAGE_TAG: ${{ needs.plan.outputs.package_tag }}
+          STORAGE_TAG: ${{ needs.plan.outputs.storage_tag }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Package.swift Upstream.versions
+          git commit -m "chore: publish $PACKAGE_TAG ($STORAGE_TAG)" || echo "No changes to commit"
+          git push
+          echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Publish package release
+        if: needs.plan.outputs.skip_release != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.plan.outputs.package_tag }}
+          name: ${{ needs.plan.outputs.package_tag }}
+          # The tag consumers resolve has to name the commit that carries the
+          # matching Package.swift, not the one this job checked out.
+          target_commitish: ${{ steps.commit.outputs.sha }}
+          body: |
+            libarchive ${{ github.event.repository.name }} package release.
+            Binaries live in `${{ needs.plan.outputs.storage_tag }}`.
+          draft: false
+          prerelease: false

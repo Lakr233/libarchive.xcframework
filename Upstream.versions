@@ -1,0 +1,32 @@
+# Pinned upstream sources used to assemble the libarchive XCFramework.
+# SHA pins are full 40-character lowercase commit hashes.
+#
+# liblzma, libzstd and liblz4 are compiled from source and merged into the same
+# static archive: the Apple SDKs ship liblzma.tbd but no lzma.h, and no zstd or
+# lz4 at all. zlib, bzip2, iconv and libxml2 come with headers in every SDK, so
+# those are linked against the system copies instead.
+#
+# Everything vendored here is permissively licensed -- BSD or 0BSD. liblzo2 is
+# the one codec libarchive supports that is left out on licence grounds (GPLv2).
+#
+# LIBARCHIVE_REF names the binary release tag: upstream.<short ref>.<rev>.
+# CI picks the next free rev on every build, so rebuilding the same upstream
+# after touching Vendor/ or the build scripts is fine.
+#
+# Re-pin with: ./Script/resolve-upstream.sh <version|latest> --write
+
+LIBARCHIVE_REPO=https://github.com/libarchive/libarchive.git
+LIBARCHIVE_VERSION=3.8.9
+LIBARCHIVE_REF=27cbc7827172698143e440801fc0ba39ccb4f1f5
+
+XZ_REPO=https://github.com/tukaani-project/xz.git
+XZ_VERSION=5.8.3
+XZ_REF=4b73f2ec19a99ef465282fbce633e8deb33691b3
+
+ZSTD_REPO=https://github.com/facebook/zstd.git
+ZSTD_VERSION=1.5.7
+ZSTD_REF=f8745da6ff1ad1e7bab384bd1f9d742439278e99
+
+LZ4_REPO=https://github.com/lz4/lz4.git
+LZ4_VERSION=1.10.0
+LZ4_REF=ebb370ca83af193212df4dcbadcc5d87bc0de2f0
