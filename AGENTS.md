@@ -16,7 +16,7 @@ Script/                    the whole build, one concern per script
 Vendor/                    the only C we own: a two-function stub, see below
 Sources/LibArchive/        @_exported import libarchive, plus the system link flags
 Tests/LibArchiveTests/     round-trips that fail if a codec silently went missing
-Example/ArchiveViewerApp/  a sandboxed iOS app that lists an archive's contents
+Example/ArchiveViewerApp/  a sandboxed iOS 17+ SwiftUI app that lists, previews, extracts, and creates archives
 Package.swift              GENERATED -- edit Package.swift.template instead
 ```
 
@@ -150,8 +150,8 @@ sample `.tar.xz` rather than shipping a fixture. The document picker accepts
 picker by extension would hide files it can actually read.
 
 Xcode 27 has no standalone Simulator.app, so there is no way to script a tap.
-Drive states from code when you need to screenshot a screen, and revert that
-before you finish.
+Drive named screens with `-ArchiveScreen` (unpack, pack, packAdvanced, settings,
+logs, activity, inspect, preview, extractSingle) when a screenshot is needed.
 
 ## Conventions
 

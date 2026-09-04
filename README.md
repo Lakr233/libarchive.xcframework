@@ -36,11 +36,10 @@ while archive_read_next_header(archive, &entry) == ARCHIVE_OK {
 archive_read_free(archive)
 ```
 
-`Example/ArchiveViewerApp.xcodeproj` is a small sandboxed iOS app doing exactly
-that: tap the progress ring, pick an archive, watch it fill as libarchive walks
-the file, and get the listing. Nothing is extracted. It also writes its own
-sample `.tar.xz` on demand, so it runs end to end on a fresh simulator with no
-files to feed it.
+`Example/ArchiveViewerApp.xcodeproj` is a sandboxed iOS 17+ SwiftUI app that
+lists, previews, extracts, and creates archives with this package. It writes
+its own sample `.tar.xz` on demand, so it runs end to end on a fresh simulator
+with no files to feed it.
 
 ## Platforms
 
