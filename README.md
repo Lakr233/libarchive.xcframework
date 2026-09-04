@@ -219,6 +219,10 @@ rebuild or to name a specific package version.
 
 - [libarchive](https://github.com/libarchive/libarchive) — BSD-2-Clause
 - [xz](https://github.com/tukaani-project/xz) — 0BSD
-- [zstd](https://github.com/facebook/zstd) — BSD-3-Clause / GPL-2.0
-- [lz4](https://github.com/lz4/lz4) — BSD-2-Clause
+- [zstd](https://github.com/facebook/zstd) — BSD-3-Clause (only the library is built)
+- [lz4](https://github.com/lz4/lz4) — BSD-2-Clause (only the library is built)
+
+The packaging here is MIT. All four upstream notices are reproduced in full in
+[`LICENSE`](LICENSE), which is what BSD-2 and BSD-3 ask of a binary
+redistribution — and a released xcframework is exactly that.
 - Packaging follows [Lakr233/openssl-spm](https://github.com/Lakr233/openssl-spm)

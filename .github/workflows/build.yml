@@ -233,7 +233,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Package.swift Upstream.versions
           git commit -m "chore: publish $PACKAGE_TAG ($STORAGE_TAG)" || echo "No changes to commit"
-          git push
+          # The build takes long enough that main can move underneath it, and a
+          # rejected push here would leave a storage release with no manifest
+          # pointing at it.
+          git pull --rebase origin "${GITHUB_REF_NAME:-main}"
+          git push origin "HEAD:${GITHUB_REF_NAME:-main}"
           echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
       - name: Publish package release
