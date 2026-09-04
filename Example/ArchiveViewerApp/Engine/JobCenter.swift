@@ -50,12 +50,12 @@ final class JobCenter {
         }
     }
 
-    func extractOne(archive: URL, entry: String, to file: URL) {
-        enqueue(kind: .extractOne, title: file.lastPathComponent, detail: entry) { report in
-            try ArchiveOperations.extract(archive: archive, entry: entry, to: file) { fraction in
+    func extractOne(archive: URL, entry: String, into directory: URL) {
+        let title = entry.split(separator: "/").last.map(String.init) ?? entry
+        enqueue(kind: .extractOne, title: title, detail: entry) { report in
+            try ArchiveOperations.extract(archive: archive, entry: entry, into: directory) { fraction in
                 report(fraction, entry)
             }
-            return file
         }
     }
 

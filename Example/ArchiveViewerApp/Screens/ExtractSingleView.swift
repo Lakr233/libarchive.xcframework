@@ -29,7 +29,14 @@ struct ExtractSingleView: View {
                 Button("Extract File") {
                     extract()
                 }
-                .disabled(model.jobs.isBusy || model.inspectURL == nil)
+                .disabled(
+                    model.jobs.isBusy
+                        || model.inspectURL == nil
+                        || ArchiveOperations.safeDestination(
+                            directory: SampleWorkspace.unpacks,
+                            relative: entryPath
+                        ) == nil
+                )
             }
         }
         .navigationTitle("Extract File")
@@ -40,18 +47,24 @@ struct ExtractSingleView: View {
         entryPath.split(separator: "/").last.map(String.init) ?? entryPath
     }
 
-    private var destination: URL {
-        SampleWorkspace.unpacks.appendingPathComponent(entryPath)
-    }
-
     private func extract() {
         guard let url = model.inspectURL else { return }
+        guard ArchiveOperations.safeDestination(
+            directory: SampleWorkspace.unpacks,
+            relative: entryPath
+        ) != nil else {
+            model.reportFailure(
+                "Unable to Extract",
+                ArchiveOperations.Failure(errorDescription: "The archive contains an unsafe path.")
+            )
+            return
+        }
         model.confirm(
             "Extract This File?",
             message: "“\(name)” will be written to Unpacked inside this app.",
             confirm: "Extract"
         ) {
-            model.jobs.extractOne(archive: url, entry: entryPath, to: destination)
+            model.jobs.extractOne(archive: url, entry: entryPath, into: SampleWorkspace.unpacks)
         }
     }
 }

@@ -214,12 +214,18 @@ enum ArchiveOperations {
 
     // MARK: - Extract one
 
+    /// Writes `path` under `directory`. The destination is always
+    /// `safeDestination`; a `../` or rooted name throws and writes nothing.
+    @discardableResult
     static func extract(
         archive url: URL,
         entry path: String,
-        to file: URL,
+        into directory: URL,
         progress: ((Double) -> Void)? = nil
-    ) throws {
+    ) throws -> URL {
+        guard let file = safeDestination(directory: directory, relative: path) else {
+            throw Failure(errorDescription: "The archive contains an unsafe path.")
+        }
         let archive = try openReader(url)
         defer { archive_read_free(archive) }
 
@@ -239,7 +245,7 @@ enum ArchiveOperations {
             if archive_entry_filetype(entry) == fileTypeDirectory {
                 try FileManager.default.createDirectory(at: file, withIntermediateDirectories: true)
                 progress?(1)
-                return
+                return file
             }
             try FileManager.default.createDirectory(
                 at: file.deletingLastPathComponent(),
@@ -254,8 +260,24 @@ enum ArchiveOperations {
             defer { try? handle.close() }
             try copyData(from: archive, to: handle, size: size, progress: progress)
             progress?(1)
-            return
+            return file
         }
+    }
+
+    /// `nil` when `relative` would leave `directory` (`..`, rooted names).
+    static func safeDestination(directory: URL, relative: String) -> URL? {
+        guard !relative.hasPrefix("/") else { return nil }
+        let parts = relative.split(separator: "/", omittingEmptySubsequences: true)
+        guard !parts.isEmpty, !parts.contains("..") else { return nil }
+        var dest = directory.standardizedFileURL
+        for part in parts {
+            dest.appendPathComponent(String(part))
+        }
+        dest.standardize()
+        let root = directory.standardizedFileURL
+        let rootPath = root.path.hasSuffix("/") ? root.path : root.path + "/"
+        guard dest.path == root.path || dest.path.hasPrefix(rootPath) else { return nil }
+        return dest
     }
 
     // MARK: - Preview
@@ -376,13 +398,6 @@ enum ArchiveOperations {
             throw error
         }
         return archive
-    }
-
-    private static func safeDestination(directory: URL, relative: String) -> URL? {
-        guard !relative.hasPrefix("/") else { return nil }
-        let parts = relative.split(separator: "/", omittingEmptySubsequences: true)
-        guard !parts.isEmpty, !parts.contains("..") else { return nil }
-        return directory.appendingPathComponent(parts.joined(separator: "/"))
     }
 
     private static func openDisk() throws -> OpaquePointer {
