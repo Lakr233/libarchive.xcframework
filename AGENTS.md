@@ -106,9 +106,21 @@ tag that already exists and holds a different binary.
 
 ```bash
 ./Script/build.sh          # everything; ~45 min, leaves BinaryTarget/ in place
-swift test                 # round-trips through every compiled-in codec
+swift test                 # every format and filter this build claims to support
 ./Script/test.sh           # builds the package for all ten destinations
 ```
+
+`FormatCoverageTests` writes and reads back every container and filter
+libarchive can produce — 16 containers, 11 filters, plus ISO 9660, the two
+mtree dialects, raw and shar, each with the quirk that makes it not fit the
+matrix spelled out. A codec quietly dropped at configure time fails there
+rather than in someone's app.
+
+Formats libarchive reads but cannot write need fixtures, and only those:
+`Tests/LibArchiveTests/Fixtures/` holds the smallest RAR, RAR5, CAB, LHA and
+RPM from libarchive's own test suite, all but the RPM under 1 KB. Prefer a
+generated round trip to a new fixture whenever the writer exists — it proves
+both halves agree and cannot go stale.
 
 `build.sh` leaves the unzipped framework in `BinaryTarget/`, which
 `Package.swift` prefers over the released URL, so `swift test` and the example

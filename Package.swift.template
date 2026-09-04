@@ -56,7 +56,8 @@ let package = Package(
         ),
         .testTarget(
             name: "LibArchiveTests",
-            dependencies: ["LibArchive"]
+            dependencies: ["LibArchive"],
+            resources: [.copy("Fixtures")]
         ),
     ]
 )
