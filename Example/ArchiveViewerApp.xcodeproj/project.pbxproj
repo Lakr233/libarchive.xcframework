@@ -10,14 +10,30 @@
 		LA0000202F00000000000001 /* LibArchive in Frameworks */ = {isa = PBXBuildFile; productRef = LA0000102F00000000000001 /* LibArchive */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		LA0000492F00000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = LA0000092F00000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = LA0000002F00000000000001;
+			remoteInfo = ArchiveViewerApp;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		LA0000012F00000000000001 /* ArchiveViewerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ArchiveViewerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		LA0000402F00000000000001 /* ArchiveViewerAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArchiveViewerAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		LA0000032F00000000000001 /* ArchiveViewerApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ArchiveViewerApp;
+			sourceTree = "<group>";
+		};
+		LA0000412F00000000000001 /* ArchiveViewerAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ArchiveViewerAppTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +47,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		LA0000442F00000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				LA0000032F00000000000001 /* ArchiveViewerApp */,
+				LA0000412F00000000000001 /* ArchiveViewerAppTests */,
 				LA0000022F00000000000001 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				LA0000012F00000000000001 /* ArchiveViewerApp.app */,
+				LA0000402F00000000000001 /* ArchiveViewerAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +101,30 @@
 			productReference = LA0000012F00000000000001 /* ArchiveViewerApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		LA0000422F00000000000001 /* ArchiveViewerAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = LA0000482F00000000000001 /* Build configuration list for PBXNativeTarget "ArchiveViewerAppTests" */;
+			buildPhases = (
+				LA0000432F00000000000001 /* Sources */,
+				LA0000442F00000000000001 /* Frameworks */,
+				LA0000452F00000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				LA0000502F00000000000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				LA0000412F00000000000001 /* ArchiveViewerAppTests */,
+			);
+			name = ArchiveViewerAppTests;
+			packageProductDependencies = (
+				LA0000102F00000000000001 /* LibArchive */,
+			);
+			productName = ArchiveViewerAppTests;
+			productReference = LA0000402F00000000000001 /* ArchiveViewerAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -88,6 +137,10 @@
 				TargetAttributes = {
 					LA0000002F00000000000001 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					LA0000422F00000000000001 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = LA0000002F00000000000001;
 					};
 				};
 			};
@@ -109,12 +162,20 @@
 			projectRoot = "";
 			targets = (
 				LA0000002F00000000000001 /* ArchiveViewerApp */,
+				LA0000422F00000000000001 /* ArchiveViewerAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		LA00000F2F00000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		LA0000452F00000000000001 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -131,20 +192,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		LA0000432F00000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		LA0000502F00000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = LA0000002F00000000000001 /* ArchiveViewerApp */;
+			targetProxy = LA0000492F00000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		LA0000052F00000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_FILE_ACCESS_USER_SELECTED_FILES = readonly;
+				ENABLE_FILE_ACCESS_USER_SELECTED_FILES = readwrite;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Archive;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -152,7 +231,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -161,7 +240,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = wiki.qaq.ArchiveViewerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -171,14 +250,17 @@
 		LA0000062F00000000000001 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_FILE_ACCESS_USER_SELECTED_FILES = readonly;
+				ENABLE_FILE_ACCESS_USER_SELECTED_FILES = readwrite;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Archive;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -186,7 +268,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -195,7 +277,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = wiki.qaq.ArchiveViewerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -219,6 +301,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -239,10 +322,51 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		LA0000462F00000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.qaq.ArchiveViewerAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArchiveViewerApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArchiveViewerApp";
+			};
+			name = Debug;
+		};
+		LA0000472F00000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = wiki.qaq.ArchiveViewerAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ArchiveViewerApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ArchiveViewerApp";
 			};
 			name = Release;
 		};
@@ -263,6 +387,15 @@
 			buildConfigurations = (
 				LA0000052F00000000000001 /* Debug */,
 				LA0000062F00000000000001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		LA0000482F00000000000001 /* Build configuration list for PBXNativeTarget "ArchiveViewerAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				LA0000462F00000000000001 /* Debug */,
+				LA0000472F00000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
