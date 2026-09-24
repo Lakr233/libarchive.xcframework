@@ -23,7 +23,7 @@ let libarchiveTarget: Target = localXCFrameworkExists
     )
 
 let package = Package(
-    name: "LibArchive",
+    name: "ArchiveKit",
     platforms: [
         .macOS(.v10_13),
         .macCatalyst(.v13),
@@ -36,13 +36,13 @@ let package = Package(
         // The binary is static either way. This picks how the wrapper around
         // it is linked into your app: straight in, or as one dylib shared by
         // several targets or extensions.
-        .library(name: "LibArchive", targets: ["LibArchive"]),
-        .library(name: "LibArchiveDynamic", type: .dynamic, targets: ["LibArchive"]),
+        .library(name: "ArchiveKit", targets: ["ArchiveKit"]),
+        .library(name: "ArchiveKitDynamic", type: .dynamic, targets: ["ArchiveKit"]),
     ],
     targets: [
         libarchiveTarget,
         .target(
-            name: "LibArchive",
+            name: "ArchiveKit",
             dependencies: ["libarchive"],
             linkerSettings: [
                 // liblzma, libzstd and liblz4 are already inside the static
@@ -55,8 +55,8 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "LibArchiveTests",
-            dependencies: ["LibArchive"],
+            name: "ArchiveKitTests",
+            dependencies: ["ArchiveKit"],
             resources: [.copy("Fixtures")]
         ),
     ]

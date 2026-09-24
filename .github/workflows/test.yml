@@ -40,7 +40,7 @@ jobs:
       - name: Build
         run: |
           set -o pipefail
-          xcodebuild -scheme LibArchive -destination "${{ matrix.destination }}" | xcbeautify
+          xcodebuild -scheme ArchiveKit -destination "${{ matrix.destination }}" | xcbeautify
 
   test:
     runs-on: macos-latest

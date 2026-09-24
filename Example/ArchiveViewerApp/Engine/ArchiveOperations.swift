@@ -1,5 +1,5 @@
 import Foundation
-import LibArchive
+import ArchiveKit
 
 /// File-URL in, result out. No SwiftUI types, so XCTest can call every
 /// operation the app ships. Callers that hold a security-scoped URL keep

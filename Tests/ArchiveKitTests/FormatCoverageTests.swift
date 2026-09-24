@@ -1,4 +1,4 @@
-import LibArchive
+import ArchiveKit
 import XCTest
 
 /// Exercises every format and filter this build claims to support.

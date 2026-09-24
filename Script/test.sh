@@ -5,7 +5,7 @@
 
 cd "$(dirname "$0")/.."
 
-SCHEME="LibArchive"
+SCHEME="ArchiveKit"
 
 test_build() {
     DESTINATION=$1

@@ -1,9 +1,9 @@
-import LibArchive
+import ArchiveKit
 import XCTest
 
 /// Properties of the build itself. Format and filter coverage lives in
 /// `FormatCoverageTests`.
-final class LibArchiveTests: XCTestCase {
+final class ArchiveKitTests: XCTestCase {
     func testVersion() {
         let version = String(cString: archive_version_string())
         XCTAssertTrue(version.hasPrefix("libarchive "), version)

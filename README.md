@@ -7,21 +7,30 @@ GitHub Action re-pins upstream and rebuilds daily.
 ## Usage
 
 ```swift
-.package(url: "https://github.com/Lakr233/libarchive.xcframework.git", from: "0.1.0")
+.package(url: "https://github.com/Lakr233/libarchive.xcframework.git", from: "1.0.0")
 ```
 
 Then pick one of the two products:
 
 | Product             | What you get                                                              |
 | ------------------- | ------------------------------------------------------------------------- |
-| `LibArchive`        | Linked straight into your target. The default; nothing to embed or sign.  |
-| `LibArchiveDynamic` | The same code as one dylib, for sharing between an app and its extensions. |
+| `ArchiveKit`        | Linked straight into your target. The default; nothing to embed or sign.  |
+| `ArchiveKitDynamic` | The same code as one dylib, for sharing between an app and its extensions. |
 
 The archive itself is static either way — the product only decides how the thin
 Swift wrapper around it is linked.
 
+### Moving from 0.x
+
+1.0.0 renames the Swift module and products from `LibArchive` to `ArchiveKit`
+(`LibArchiveDynamic` is now `ArchiveKitDynamic`). The old wrapper differed from
+the C module `libarchive` only in case, and on a case-insensitive volume Xcode 27
+resolved one as the other: every target that imported the wrapper failed with
+`cannot load module 'LibArchive' as 'libarchive'`. Change the product in your
+dependency and `import LibArchive` to `import ArchiveKit`; the C API is unchanged.
+
 ```swift
-import LibArchive
+import ArchiveKit
 
 let archive = archive_read_new()
 archive_read_support_filter_all(archive)

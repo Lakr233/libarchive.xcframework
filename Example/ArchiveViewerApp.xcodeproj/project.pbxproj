@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		LA0000202F00000000000001 /* LibArchive in Frameworks */ = {isa = PBXBuildFile; productRef = LA0000102F00000000000001 /* LibArchive */; };
+		LA0000202F00000000000001 /* ArchiveKit in Frameworks */ = {isa = PBXBuildFile; productRef = LA0000102F00000000000001 /* ArchiveKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				LA0000202F00000000000001 /* LibArchive in Frameworks */,
+				LA0000202F00000000000001 /* ArchiveKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +95,7 @@
 			);
 			name = ArchiveViewerApp;
 			packageProductDependencies = (
-				LA0000102F00000000000001 /* LibArchive */,
+				LA0000102F00000000000001 /* ArchiveKit */,
 			);
 			productName = ArchiveViewerApp;
 			productReference = LA0000012F00000000000001 /* ArchiveViewerApp.app */;
@@ -119,7 +119,7 @@
 			);
 			name = ArchiveViewerAppTests;
 			packageProductDependencies = (
-				LA0000102F00000000000001 /* LibArchive */,
+				LA0000102F00000000000001 /* ArchiveKit */,
 			);
 			productName = ArchiveViewerAppTests;
 			productReference = LA0000402F00000000000001 /* ArchiveViewerAppTests.xctest */;
@@ -410,10 +410,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		LA0000102F00000000000001 /* LibArchive */ = {
+		LA0000102F00000000000001 /* ArchiveKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = LA0000112F00000000000001 /* XCLocalSwiftPackageReference ".." */;
-			productName = LibArchive;
+			productName = ArchiveKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

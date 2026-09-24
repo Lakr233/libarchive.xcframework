@@ -14,8 +14,8 @@ xcframework covering every Apple platform and architecture.
 Upstream.versions          the pins: repo + version + 40-char commit for each dependency
 Script/                    the whole build, one concern per script
 Vendor/                    the only C we own: a two-function stub, see below
-Sources/LibArchive/        @_exported import libarchive, plus the system link flags
-Tests/LibArchiveTests/     round-trips that fail if a codec silently went missing
+Sources/ArchiveKit/        @_exported import libarchive, plus the system link flags
+Tests/ArchiveKitTests/     round-trips that fail if a codec silently went missing
 Example/ArchiveViewerApp/  a sandboxed iOS 17+ SwiftUI app that lists, previews, extracts, and creates archives
 Package.swift              GENERATED -- edit Package.swift.template instead
 ```
@@ -40,6 +40,13 @@ keeping a second copy.
 ## Things that will bite you
 
 Each of these cost a debugging cycle. They are all commented at the site too.
+
+**The Swift wrapper must not share a case-insensitive name with the C module.**
+It used to be `LibArchive` over `libarchive`. Xcode 27 builds both into one
+products directory, and on a case-insensitive volume the lookup for the C module
+`libarchive` found `LibArchive.swiftmodule` first, so every consumer failed with
+"cannot load module 'LibArchive' as 'libarchive'" while the wrapper itself built
+fine. That is why the module and products are `ArchiveKit` since 1.0.0.
 
 **libarchive only probes CommonCrypto when `CMAKE_SYSTEM_NAME` is exactly
 `Darwin`.** Every non-macOS Apple platform therefore ends up with *no* digest
@@ -117,7 +124,7 @@ matrix spelled out. A codec quietly dropped at configure time fails there
 rather than in someone's app.
 
 Formats libarchive reads but cannot write need fixtures, and only those:
-`Tests/LibArchiveTests/Fixtures/` holds the smallest RAR, RAR5, CAB, LHA and
+`Tests/ArchiveKitTests/Fixtures/` holds the smallest RAR, RAR5, CAB, LHA and
 RPM from libarchive's own test suite, all but the RPM under 1 KB. Prefer a
 generated round trip to a new fixture whenever the writer exists — it proves
 both halves agree and cannot go stale.
