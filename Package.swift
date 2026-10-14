@@ -18,8 +18,8 @@ let libarchiveTarget: Target = localXCFrameworkExists
     ? .binaryTarget(name: "libarchive", path: localXCFramework)
     : .binaryTarget(
         name: "libarchive",
-        url: "https://github.com/Lakr233/libarchive.xcframework/releases/download/upstream.27cbc7827172.2/libarchive.xcframework.zip",
-        checksum: "573fa72ca53f0e623e1f26e3993a22a075b5dba91733ea8aaaa370b52d93537c"
+        url: "https://github.com/Lakr233/libarchive.xcframework/releases/download/upstream.0c48412be2d9.1/libarchive.xcframework.zip",
+        checksum: "ae6fde48a36230b4f63b800f5be5a0dc1ef84f1c958acdc0e0b2e30bbb6d51e4"
     )
 
 let package = Package(

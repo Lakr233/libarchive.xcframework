@@ -16,12 +16,12 @@
 # Re-pin with: ./Script/resolve-upstream.sh <version|latest> --write
 
 LIBARCHIVE_REPO=https://github.com/libarchive/libarchive.git
-LIBARCHIVE_VERSION=3.8.9
-LIBARCHIVE_REF=27cbc7827172698143e440801fc0ba39ccb4f1f5
+LIBARCHIVE_VERSION=3.8.10
+LIBARCHIVE_REF=0c48412be2d94afe1859a807ea7896a18d8900bd
 
 XZ_REPO=https://github.com/tukaani-project/xz.git
-XZ_VERSION=5.8.3
-XZ_REF=4b73f2ec19a99ef465282fbce633e8deb33691b3
+XZ_VERSION=5.8.4
+XZ_REF=d3e650e63c110e830fd5391e7f8b45df0b91d3da
 
 ZSTD_REPO=https://github.com/facebook/zstd.git
 ZSTD_VERSION=1.5.7
