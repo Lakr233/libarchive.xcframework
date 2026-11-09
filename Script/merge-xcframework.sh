@@ -142,12 +142,19 @@ verify_deep_framework_layout() {
 
 verify_xcframework_zip() {
     local zip_path="$1"
-    local unpack_dir
+    local unpack_dir notice_dir
 
     unpack_dir=$(mktemp -d)
     ditto -x -k "$zip_path" "$unpack_dir"
     verify_deep_framework_layout "$unpack_dir/$FRAMEWORK_NAME.xcframework"
-    cmp "$ROOT_DIR/LICENSE" "$unpack_dir/$FRAMEWORK_NAME.xcframework/Licenses/LICENSE"
+    notice_dir="$unpack_dir/$FRAMEWORK_NAME.xcframework/Licenses"
+    if [ -L "$unpack_dir/$FRAMEWORK_NAME.xcframework" ] ||
+        [ ! -d "$notice_dir" ] || [ -L "$notice_dir" ] ||
+        [ ! -f "$notice_dir/LICENSE" ] || [ -L "$notice_dir/LICENSE" ]; then
+        echo "[!] packaged license must be a regular file under a non-symlink Licenses directory" >&2
+        exit 1
+    fi
+    cmp "$ROOT_DIR/LICENSE" "$notice_dir/LICENSE"
     rm -rf "$unpack_dir"
 }
 
