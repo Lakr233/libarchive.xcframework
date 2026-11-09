@@ -147,6 +147,7 @@ verify_xcframework_zip() {
     unpack_dir=$(mktemp -d)
     ditto -x -k "$zip_path" "$unpack_dir"
     verify_deep_framework_layout "$unpack_dir/$FRAMEWORK_NAME.xcframework"
+    cmp "$ROOT_DIR/LICENSE" "$unpack_dir/$FRAMEWORK_NAME.xcframework/Licenses/LICENSE"
     rm -rf "$unpack_dir"
 }
 
@@ -228,6 +229,8 @@ done
 echo "[*] creating xcframework"
 xcodebuild -create-xcframework -output "$XCFRAMEWORK_PATH" "${XCFRAMEWORK_COMMAND[@]}"
 verify_deep_framework_layout "$XCFRAMEWORK_PATH"
+mkdir -p "$XCFRAMEWORK_PATH/Licenses"
+cp "$ROOT_DIR/LICENSE" "$XCFRAMEWORK_PATH/Licenses/LICENSE"
 
 echo "[*] packing with ditto (preserve symlinks)"
 pushd "$(dirname "$XCFRAMEWORK_PATH")" >/dev/null
